@@ -1,5 +1,6 @@
 use crate::token::{Token, TokenType};
 
+#[derive(Debug)]
 pub struct Lexer {
     pub source: String,        // The source code
     pub position: usize,       // The current position (0 initially)
@@ -78,27 +79,27 @@ impl Lexer {
             Some('+') => {
                 let lexeme = self.current_char.unwrap().to_string();
                 self._read_char();
-                self._new_token(TokenType::Add, lexeme)
+                self._new_token(TokenType::Plus, lexeme)
             }
             Some('-') => {
                 let lexeme = self.current_char.unwrap().to_string();
                 self._read_char();
-                self._new_token(TokenType::Subtract, lexeme)
+                self._new_token(TokenType::Minus, lexeme)
             }
             Some('*') => {
                 let lexeme = self.current_char.unwrap().to_string();
                 self._read_char();
-                self._new_token(TokenType::Multiply, lexeme)
+                self._new_token(TokenType::Asterisk, lexeme)
             }
             Some('/') => {
                 let lexeme = self.current_char.unwrap().to_string();
                 self._read_char();
-                self._new_token(TokenType::Divide, lexeme)
+                self._new_token(TokenType::Slash, lexeme)
             }
             Some('^') => {
                 let lexeme = self.current_char.unwrap().to_string();
                 self._read_char();
-                self._new_token(TokenType::Power, lexeme)
+                self._new_token(TokenType::Pow, lexeme)
             }
             Some('%') => {
                 let lexeme = self.current_char.unwrap().to_string();

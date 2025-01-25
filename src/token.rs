@@ -1,3 +1,5 @@
+use crate::parser::PrecedenceType;
+
 #[derive(Debug)]
 pub enum TokenType {
     // Variables
@@ -8,11 +10,11 @@ pub enum TokenType {
     Float,
 
     // Arithmetic operators
-    Add,
-    Subtract,
-    Multiply,
-    Divide,
-    Power,
+    Plus,
+    Minus,
+    Asterisk,
+    Slash,
+    Pow,
     Modulus,
 
     // Symbols
@@ -23,6 +25,17 @@ pub enum TokenType {
     // Errors
     Eof,
     Illegal,
+}
+
+impl TokenType {
+    pub fn precedence(&self) -> PrecedenceType {
+        match self {
+            TokenType::Plus | TokenType::Minus => PrecedenceType::Sum,
+            TokenType::Asterisk | TokenType::Slash | TokenType::Modulus => PrecedenceType::Product,
+            TokenType::Pow => PrecedenceType::Power,
+            _ => PrecedenceType::Lowest,
+        }
+    }
 }
 
 #[derive(Debug)]
