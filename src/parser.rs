@@ -2,9 +2,9 @@
 // liars all over the place
 // you're a liar
 
-use std::collections::HashMap;
-use crate::token::{Token, TokenType};
 use crate::lexer::Lexer;
+use crate::token::{Token, TokenType};
+use std::collections::HashMap;
 
 #[derive(Debug, PartialEq, PartialOrd, Clone, Copy)]
 pub enum PrecedenceType {
@@ -46,6 +46,8 @@ impl Parser {
         parser
     }
 
+    pub fn parse(&mut self) {}
+
     fn _next_token(&mut self) {
         self.current_token = self.peek_token.take();
         self.peek_token = Some(self.lexer.next_token());
@@ -76,6 +78,25 @@ impl Parser {
                 token_type, peek_token.token_type
             );
             self.errors.push(error);
+        }
+    }
+
+    fn _no_prefix_parse_in_error(&mut self, token_type: TokenType) {
+        let error = format!("No prefix parse function for {:?} found", token_type);
+        self.errors.push(error);
+    }
+
+    fn _current_precedence(&mut self) -> PrecedenceType {
+        match self.current_token {
+            Some(ref token) => token.token_type.precedence(),
+            None => PrecedenceType::Lowest,
+        }
+    }
+
+    fn _peek_precedence(&mut self) -> PrecedenceType {
+        match self.peek_token {
+            Some(ref token) => token.token_type.precedence(),
+            None => PrecedenceType::Lowest,
         }
     }
 }
