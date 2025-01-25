@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub enum TokenType {
     // Variables
     Identifier,
@@ -24,6 +25,7 @@ pub enum TokenType {
     Illegal,
 }
 
+#[derive(Debug)]
 pub struct Token {
     pub token_type: TokenType,
     pub lexeme: String, // The string literal encoding of the current token

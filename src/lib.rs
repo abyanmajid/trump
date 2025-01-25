@@ -2,5 +2,5 @@
 // - mr donald j. trump
 // aka content president
 
-mod token;
-mod lexer;
+pub mod token;
+pub mod lexer;

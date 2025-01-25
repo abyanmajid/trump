@@ -1,11 +1,11 @@
 use crate::token::{Token, TokenType};
 
 pub struct Lexer {
-    source: String,        // The source code
-    position: usize,       // The current position (0 initially)
-    read_position: usize,  // The next position in the input
-    line_no: usize,        // The current line number (1 initially)
-    current_char: Option<char>, // The current character being processed
+    pub source: String,        // The source code
+    pub position: usize,       // The current position (0 initially)
+    pub read_position: usize,  // The next position in the input
+    pub line_no: usize,        // The current line number (1 initially)
+    pub current_char: Option<char>, // The current character being processed
 }
 
 impl Lexer {
@@ -71,7 +71,7 @@ impl Lexer {
         self.source[start_position..self.position].to_string()
     }
 
-    pub fn move_to_next_token(&mut self) -> Token {
+    pub fn next_token(&mut self) -> Token {
         self._skip_whitespace();
 
         let token = match self.current_char {
