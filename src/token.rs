@@ -1,4 +1,7 @@
-pub enum TokenEnum {
+pub enum TokenType {
+    // Variables
+    Identifier,
+
     // Data types
     Integer,
     Float,
@@ -6,7 +9,7 @@ pub enum TokenEnum {
     // Arithmetic operators
     Add,
     Subtract,
-    Times,
+    Multiply,
     Divide,
     Power,
     Modulus,
@@ -22,19 +25,19 @@ pub enum TokenEnum {
 }
 
 pub struct Token {
-    pub token_type: TokenEnum,
-    pub lexeme: String,
-    pub line: u32,
-    pub column: u32,
+    pub token_type: TokenType,
+    pub lexeme: String, // The string literal encoding of the current token
+    pub line: usize, // The line number where the token was found
+    pub position: usize, // The position (index) in the line where the token was found
 }
 
 impl Token {
-    pub fn new(token_type: TokenEnum, lexeme: String, line: u32, column: u32) -> Self {
+    pub fn new(token_type: TokenType, lexeme: String, line: usize, position: usize) -> Self {
         Self {
             token_type,
             lexeme,
             line,
-            column,
+            position,
         }
     }
 }
