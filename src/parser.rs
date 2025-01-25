@@ -1,3 +1,7 @@
+// lyin kamala
+// liars all over the place
+// you're a liar
+
 use std::collections::HashMap;
 use crate::token::{Token, TokenType};
 use crate::lexer::Lexer;
@@ -27,7 +31,7 @@ pub struct Parser {
 
 impl Parser {
     pub fn new(lexer: Lexer) -> Self {
-        let parser = Parser {
+        let mut parser = Parser {
             lexer,
             errors: Vec::new(),
             current_token: None,
@@ -36,7 +40,43 @@ impl Parser {
             infix_parse_fns: HashMap::new(),
         };
 
+        parser._next_token();
+        parser._next_token();
+
         parser
+    }
+
+    fn _next_token(&mut self) {
+        self.current_token = self.peek_token.take();
+        self.peek_token = Some(self.lexer.next_token());
+    }
+
+    fn _peek_token_is(&self, token_type: &TokenType) -> bool {
+        if let Some(ref peek_token) = self.peek_token {
+            &peek_token.token_type == token_type
+        } else {
+            false
+        }
+    }
+
+    fn _expect_peek(&mut self, token_type: TokenType) -> bool {
+        if self._peek_token_is(&token_type) {
+            self._next_token();
+            true
+        } else {
+            self._peek_error(&token_type);
+            false
+        }
+    }
+
+    fn _peek_error(&mut self, token_type: &TokenType) {
+        if let Some(ref peek_token) = self.peek_token {
+            let error = format!(
+                "Expected next token to be {:?}, got {:?} instead",
+                token_type, peek_token.token_type
+            );
+            self.errors.push(error);
+        }
     }
 }
 

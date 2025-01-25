@@ -2,10 +2,10 @@ use crate::token::{Token, TokenType};
 
 #[derive(Debug)]
 pub struct Lexer {
-    pub source: String,        // The source code
-    pub position: usize,       // The current position (0 initially)
-    pub read_position: usize,  // The next position in the input
-    pub line_no: usize,        // The current line number (1 initially)
+    pub source: String,             // The source code
+    pub position: usize,            // The current position (0 initially)
+    pub read_position: usize,       // The next position in the input
+    pub line_no: usize,             // The current line number (1 initially)
     pub current_char: Option<char>, // The current character being processed
 }
 
@@ -21,55 +21,6 @@ impl Lexer {
 
         lexer._read_char();
         lexer
-    }
-
-    fn _read_char(&mut self) {
-        if self.read_position >= self.source.len() {
-            self.current_char = None;
-        } else {
-            self.current_char = self.source.chars().nth(self.read_position);
-        }
-
-        self.position = self.read_position;
-        self.read_position += 1;
-    }
-
-    fn _skip_whitespace(&mut self) {
-        while let Some(ch) = self.current_char {
-            if ch.is_whitespace() {
-                self._read_char();
-            } else {
-                break;
-            }
-        }
-    }
-
-    fn _new_token(&self, token_type: TokenType, lexeme: String) -> Token {
-        Token::new(token_type, lexeme, self.line_no, self.position)
-    }
-
-    fn _read_number(&mut self) -> String {
-        let start_position = self.position;
-        while let Some(ch) = self.current_char {
-            if ch.is_ascii_digit() || ch == '.' {
-                self._read_char();
-            } else {
-                break;
-            }
-        }
-        self.source[start_position..self.position].to_string()
-    }
-
-    fn _read_identifier(&mut self) -> String {
-        let start_position = self.position;
-        while let Some(ch) = self.current_char {
-            if ch.is_alphabetic() || ch == '_' {
-                self._read_char();
-            } else {
-                break;
-            }
-        }
-        self.source[start_position..self.position].to_string()
     }
 
     pub fn next_token(&mut self) -> Token {
@@ -142,5 +93,54 @@ impl Lexer {
         };
 
         token
+    }
+
+    fn _read_char(&mut self) {
+        if self.read_position >= self.source.len() {
+            self.current_char = None;
+        } else {
+            self.current_char = self.source.chars().nth(self.read_position);
+        }
+
+        self.position = self.read_position;
+        self.read_position += 1;
+    }
+
+    fn _skip_whitespace(&mut self) {
+        while let Some(ch) = self.current_char {
+            if ch.is_whitespace() {
+                self._read_char();
+            } else {
+                break;
+            }
+        }
+    }
+
+    fn _new_token(&self, token_type: TokenType, lexeme: String) -> Token {
+        Token::new(token_type, lexeme, self.line_no, self.position)
+    }
+
+    fn _read_number(&mut self) -> String {
+        let start_position = self.position;
+        while let Some(ch) = self.current_char {
+            if ch.is_ascii_digit() || ch == '.' {
+                self._read_char();
+            } else {
+                break;
+            }
+        }
+        self.source[start_position..self.position].to_string()
+    }
+
+    fn _read_identifier(&mut self) -> String {
+        let start_position = self.position;
+        while let Some(ch) = self.current_char {
+            if ch.is_alphabetic() || ch == '_' {
+                self._read_char();
+            } else {
+                break;
+            }
+        }
+        self.source[start_position..self.position].to_string()
     }
 }

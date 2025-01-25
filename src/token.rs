@@ -1,6 +1,6 @@
 use crate::parser::PrecedenceType;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum TokenType {
     // Variables
     Identifier,
