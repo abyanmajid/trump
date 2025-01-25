@@ -24,17 +24,17 @@ pub enum PrecedenceType {
 }
 
 #[derive(Debug)]
-pub struct Parser {
-    lexer: Lexer,
+pub struct Parser<'a> {
+    lexer: Lexer<'a>,
     errors: Vec<String>,
     current_token: Option<Token>,
     peek_token: Option<Token>,
-    prefix_parse_fns: HashMap<TokenType, fn(&mut Parser) -> Option<Expression>>,
-    infix_parse_fns: HashMap<TokenType, fn(&mut Parser, Expression) -> Option<Expression>>,
+    prefix_parse_fns: HashMap<TokenType, fn(&mut Parser<'a>) -> Option<Expression>>,
+    infix_parse_fns: HashMap<TokenType, fn(&mut Parser<'a>, Expression) -> Option<Expression>>,
 }
 
-impl Parser {
-    pub fn new(lexer: Lexer) -> Self {
+impl<'a> Parser<'a> {
+    pub fn new(lexer: Lexer<'a>) -> Self {
         let mut parser = Parser {
             lexer,
             errors: Vec::new(),
@@ -44,16 +44,16 @@ impl Parser {
             infix_parse_fns: HashMap::new(),
         };
 
-        parser.register_prefix(TokenType::Integer, Parser::_parse_int_literal);
-        parser.register_prefix(TokenType::Float, Parser::_parse_float_literal);
-        parser.register_prefix(TokenType::LeftParen, Parser::_parse_grouped_expression);
+        parser._register_prefix(TokenType::Integer, Parser::_parse_int_literal);
+        parser._register_prefix(TokenType::Float, Parser::_parse_float_literal);
+        parser._register_prefix(TokenType::LeftParen, Parser::_parse_grouped_expression);
 
-        parser.register_infix(TokenType::Plus, Parser::_parse_infix_expression);
-        parser.register_infix(TokenType::Minus, Parser::_parse_infix_expression);
-        parser.register_infix(TokenType::Slash, Parser::_parse_infix_expression);
-        parser.register_infix(TokenType::Asterisk, Parser::_parse_infix_expression);
-        parser.register_infix(TokenType::Pow, Parser::_parse_infix_expression);
-        parser.register_infix(TokenType::Modulus, Parser::_parse_infix_expression);
+        parser._register_infix(TokenType::Plus, Parser::_parse_infix_expression);
+        parser._register_infix(TokenType::Minus, Parser::_parse_infix_expression);
+        parser._register_infix(TokenType::Slash, Parser::_parse_infix_expression);
+        parser._register_infix(TokenType::Asterisk, Parser::_parse_infix_expression);
+        parser._register_infix(TokenType::Pow, Parser::_parse_infix_expression);
+        parser._register_infix(TokenType::Modulus, Parser::_parse_infix_expression);
 
         parser._next_token();
         parser._next_token();
@@ -238,18 +238,18 @@ impl Parser {
         }
     }
 
-    fn register_prefix(
+    fn _register_prefix(
         &mut self,
         token_type: TokenType,
-        func: fn(&mut Parser) -> Option<Expression>,
+        func: fn(&mut Parser<'a>) -> Option<Expression>,
     ) {
         self.prefix_parse_fns.insert(token_type, func);
     }
 
-    fn register_infix(
+    fn _register_infix(
         &mut self,
         token_type: TokenType,
-        func: fn(&mut Parser, Expression) -> Option<Expression>,
+        func: fn(&mut Parser<'a>, Expression) -> Option<Expression>,
     ) {
         self.infix_parse_fns.insert(token_type, func);
     }

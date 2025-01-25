@@ -1,16 +1,16 @@
 use crate::token::{Token, TokenType};
 
 #[derive(Debug)]
-pub struct Lexer {
-    pub source: String,             // The source code
+pub struct Lexer<'a> {
+    pub source: &'a str,            // Reference to the source code
     pub position: usize,            // The current position (0 initially)
     pub read_position: usize,       // The next position in the input
     pub line_no: usize,             // The current line number (1 initially)
     pub current_char: Option<char>, // The current character being processed
 }
 
-impl Lexer {
-    pub fn new(source: String) -> Self {
+impl<'a> Lexer<'a> {
+    pub fn new(source: &'a str) -> Self {
         let mut lexer = Lexer {
             source,
             position: 0,
@@ -27,51 +27,15 @@ impl Lexer {
         self._skip_whitespace();
 
         let token = match self.current_char {
-            Some('+') => {
-                let lexeme = self.current_char.unwrap().to_string();
-                self._read_char();
-                self._new_token(TokenType::Plus, lexeme)
-            }
-            Some('-') => {
-                let lexeme = self.current_char.unwrap().to_string();
-                self._read_char();
-                self._new_token(TokenType::Minus, lexeme)
-            }
-            Some('*') => {
-                let lexeme = self.current_char.unwrap().to_string();
-                self._read_char();
-                self._new_token(TokenType::Asterisk, lexeme)
-            }
-            Some('/') => {
-                let lexeme = self.current_char.unwrap().to_string();
-                self._read_char();
-                self._new_token(TokenType::Slash, lexeme)
-            }
-            Some('^') => {
-                let lexeme = self.current_char.unwrap().to_string();
-                self._read_char();
-                self._new_token(TokenType::Pow, lexeme)
-            }
-            Some('%') => {
-                let lexeme = self.current_char.unwrap().to_string();
-                self._read_char();
-                self._new_token(TokenType::Modulus, lexeme)
-            }
-            Some('(') => {
-                let lexeme = self.current_char.unwrap().to_string();
-                self._read_char();
-                self._new_token(TokenType::LeftParen, lexeme)
-            }
-            Some(')') => {
-                let lexeme = self.current_char.unwrap().to_string();
-                self._read_char();
-                self._new_token(TokenType::RightParen, lexeme)
-            }
-            Some(';') => {
-                let lexeme = self.current_char.unwrap().to_string();
-                self._read_char();
-                self._new_token(TokenType::SemiColon, lexeme)
-            }
+            Some('+') => self._create_single_char_token(TokenType::Plus),
+            Some('-') => self._create_single_char_token(TokenType::Minus),
+            Some('*') => self._create_single_char_token(TokenType::Asterisk),
+            Some('/') => self._create_single_char_token(TokenType::Slash),
+            Some('^') => self._create_single_char_token(TokenType::Pow),
+            Some('%') => self._create_single_char_token(TokenType::Modulus),
+            Some('(') => self._create_single_char_token(TokenType::LeftParen),
+            Some(')') => self._create_single_char_token(TokenType::RightParen),
+            Some(';') => self._create_single_char_token(TokenType::SemiColon),
             Some(ch) if ch.is_ascii_digit() || ch == '.' => {
                 let lexeme = self._read_number();
                 if lexeme.contains('.') {
@@ -118,6 +82,12 @@ impl Lexer {
 
     fn _new_token(&self, token_type: TokenType, lexeme: String) -> Token {
         Token::new(token_type, lexeme, self.line_no, self.position)
+    }
+
+    fn _create_single_char_token(&mut self, token_type: TokenType) -> Token {
+        let lexeme = self.current_char.unwrap().to_string();
+        self._read_char();
+        self._new_token(token_type, lexeme)
     }
 
     fn _read_number(&mut self) -> String {
