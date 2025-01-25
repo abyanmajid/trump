@@ -4,6 +4,8 @@ use std::collections::HashMap;
 #[derive(Debug, Clone, PartialEq, Serialize)]
 pub enum NodeType {
     Program,
+    Statement,
+    Expression,
     ExpressionStatement,
     InfixStatement,
     IntegerLiteral,
@@ -14,6 +16,8 @@ impl NodeType {
     pub fn value(&self) -> &'static str {
         match self {
             NodeType::Program => "Program",
+            NodeType::Statement => "Statement",
+            NodeType::Expression => "Expression",
             NodeType::ExpressionStatement => "ExpressionStatement",
             NodeType::InfixStatement => "InfixStatement",
             NodeType::IntegerLiteral => "IntegerLiteral",
@@ -25,6 +29,8 @@ impl NodeType {
 #[derive(Debug, Clone, PartialEq, Serialize)]
 pub enum Node {
     Program(Program),
+    Statement(Statement),
+    Expression(Expression),
     ExpressionStatement(ExpressionStatement),
     InfixExpression(InfixExpression),
     IntegerLiteral(IntegerLiteral),
@@ -35,6 +41,8 @@ impl Node {
     pub fn get_type(&self) -> NodeType {
         match self {
             Node::Program(_) => NodeType::Program,
+            Node::Statement(_) => NodeType::Statement,
+            Node::Expression(_) => NodeType::Expression,
             Node::ExpressionStatement(_) => NodeType::ExpressionStatement,
             Node::InfixExpression(_) => NodeType::InfixStatement,
             Node::IntegerLiteral(_) => NodeType::IntegerLiteral,
@@ -45,6 +53,8 @@ impl Node {
     pub fn json(&self) -> HashMap<String, serde_json::Value> {
         match self {
             Node::Program(program) => program.json(),
+            Node::Statement(stmt) => stmt.json(),
+            Node::Expression(expr) => expr.json(),
             Node::ExpressionStatement(expr_stmt) => expr_stmt.json(),
             Node::InfixExpression(infix_expr) => infix_expr.json(),
             Node::IntegerLiteral(int_lit) => int_lit.json(),
@@ -182,6 +192,50 @@ impl IntegerLiteral {
             serde_json::Value::Number(serde_json::Number::from(self.value)),
         );
         map
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize)]
+pub enum Statement {
+    ExpressionStatement(ExpressionStatement),
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize)]
+pub enum Expression {
+    InfixExpression(InfixExpression),
+    IntegerLiteral(IntegerLiteral),
+    FloatLiteral(FloatLiteral),
+}
+
+impl Expression {
+    pub fn get_type(&self) -> NodeType {
+        match self {
+            Expression::InfixExpression(_) => NodeType::InfixStatement,
+            Expression::IntegerLiteral(_) => NodeType::IntegerLiteral,
+            Expression::FloatLiteral(_) => NodeType::FloatLiteral,
+        }
+    }
+
+    pub fn json(&self) -> HashMap<String, serde_json::Value> {
+        match self {
+            Expression::InfixExpression(infix_expr) => infix_expr.json(),
+            Expression::IntegerLiteral(int_lit) => int_lit.json(),
+            Expression::FloatLiteral(float_lit) => float_lit.json(),
+        }
+    }
+}
+
+impl Statement {
+    pub fn get_type(&self) -> NodeType {
+        match self {
+            Statement::ExpressionStatement(_) => NodeType::ExpressionStatement,
+        }
+    }
+
+    pub fn json(&self) -> HashMap<String, serde_json::Value> {
+        match self {
+            Statement::ExpressionStatement(expr_stmt) => expr_stmt.json(),
+        }
     }
 }
 

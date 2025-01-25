@@ -1,6 +1,6 @@
 use crate::parser::PrecedenceType;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq, Hash, Copy, Clone)]
 pub enum TokenType {
     // Variables
     Identifier,
@@ -41,8 +41,8 @@ impl TokenType {
 #[derive(Debug)]
 pub struct Token {
     pub token_type: TokenType,
-    pub lexeme: String, // The string literal encoding of the current token
-    pub line: usize, // The line number where the token was found
+    pub lexeme: String,  // The string literal encoding of the current token
+    pub line: usize,     // The line number where the token was found
     pub position: usize, // The position (index) in the line where the token was found
 }
 
