@@ -1,3 +1,5 @@
+unfinished and not in active development because uh, i already have too much problems
+
 # Trump
 
 A compiled programming language built in Rust and LLVM with meme syntax inspired by the convicted felon, crypto bro, and AI slop gas man Mr. Donald J. Trump. Oh, he's also the greatest content president of all time.
